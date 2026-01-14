@@ -15,6 +15,7 @@ import {
     FileText,
     ChevronRight,
     ChevronDown,
+    MoreHorizontal,
 } from 'lucide-react';
 import { FileIcon } from '@/components/file-icon';
 import {
@@ -45,6 +46,13 @@ import {
     DialogTitle,
     DialogFooter,
 } from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
 import type { FileNode, FileNodeType } from '@/types';
 
@@ -64,6 +72,8 @@ export default function DashboardPage() {
     const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
     const [selectedFile, setSelectedFile] = useState<FileNode | null>(null);
     const [copied, setCopied] = useState(false);
+
+    const [nodeToDelete, setNodeToDelete] = useState<FileNode | null>(null);
 
     const {
         data: nodes,
@@ -151,14 +161,25 @@ export default function DashboardPage() {
         }
     };
 
+    const confirmDelete = (node: FileNode) => {
+        setNodeToDelete(node);
+        setIsDeleteOpen(true);
+    };
+
     const handleDelete = async () => {
-        if (!selectedFile) return;
+        if (!nodeToDelete) return;
         try {
-            await deleteFileNode(selectedFile.id);
+            await deleteFileNode(nodeToDelete.id);
             await mutateNodes();
-            setSelectedFile(null);
-            setSelectedNodeId(null);
-            setEditorState({ selectedFileId: null, content: '', isDirty: false });
+
+            // If we deleted the currently selected file, clear selection
+            if (selectedFile?.id === nodeToDelete.id) {
+                setSelectedFile(null);
+                setSelectedNodeId(null);
+                setEditorState({ selectedFileId: null, content: '', isDirty: false });
+            }
+
+            setNodeToDelete(null);
             setIsDeleteOpen(false);
             toast.success('Deleted!');
         } catch (error: unknown) {
@@ -227,9 +248,22 @@ export default function DashboardPage() {
     const handleTogglePublic = async (isPublic: boolean) => {
         if (!selectedFile) return;
         try {
+            let shareId = selectedFile.share_id;
+
+            // If making public and no share link exists, generate one
+            if (isPublic && !shareId) {
+                shareId = await generateShareLink(selectedFile.id);
+            }
+
             await togglePublic(selectedFile.id, isPublic);
             await mutateNodes();
-            setSelectedFile((prev) => (prev ? { ...prev, is_public: isPublic } : null));
+
+            setSelectedFile((prev) => (prev ? {
+                ...prev,
+                is_public: isPublic,
+                share_id: shareId
+            } : null));
+
             toast.success(isPublic ? 'Now public!' : 'Now private');
         } catch (error: unknown) {
             toast.error(error instanceof Error ? error.message : 'Failed to update');
@@ -309,6 +343,7 @@ export default function DashboardPage() {
                                             onToggle={toggleFolder}
                                             onCreateFile={(parentId) => openCreate('file', parentId)}
                                             onCreateFolder={(parentId) => openCreate('folder', parentId)}
+                                            onDelete={confirmDelete}
                                         />
                                     ))}
                             </div>
@@ -338,7 +373,7 @@ export default function DashboardPage() {
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            onClick={() => setIsDeleteOpen(true)}
+                                            onClick={() => confirmDelete(selectedFile)}
                                             className="h-7 text-destructive hover:text-destructive"
                                         >
                                             <Trash2 className="h-3 w-3" />
@@ -458,11 +493,11 @@ export default function DashboardPage() {
             <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                        <DialogTitle>Delete {selectedFile?.type === 'folder' ? 'Folder' : 'File'}</DialogTitle>
+                        <DialogTitle>Delete {nodeToDelete?.type === 'folder' ? 'Folder' : 'File'}</DialogTitle>
                     </DialogHeader>
                     <p className="text-sm text-muted-foreground py-4">
-                        Are you sure you want to delete &quot;{selectedFile?.name}&quot;?
-                        {selectedFile?.type === 'folder' && ' All files inside will also be deleted.'}
+                        Are you sure you want to delete &quot;{nodeToDelete?.name}&quot;?
+                        {nodeToDelete?.type === 'folder' && ' All files inside will also be deleted.'}
                         This cannot be undone.
                     </p>
                     <DialogFooter>
@@ -490,6 +525,7 @@ function TreeNode({
     onToggle,
     onCreateFile,
     onCreateFolder,
+    onDelete,
 }: {
     node: FileNode;
     level: number;
@@ -500,6 +536,7 @@ function TreeNode({
     onToggle: (folderId: string) => void;
     onCreateFile: (parentId: string) => void;
     onCreateFolder: (parentId: string) => void;
+    onDelete: (node: FileNode) => void;
 }) {
     const isFolder = node.type === 'folder';
     const isExpanded = expandedFolders.has(node.id);
@@ -522,28 +559,47 @@ function TreeNode({
                             <ChevronRight className="h-3 w-3 text-muted-foreground shrink-0" />
                         )}
                         <span className="truncate flex-1">{node.name}</span>
-                        <div className="hidden group-hover:flex items-center gap-0.5">
-                            <button
-                                onClick={(e) => { e.stopPropagation(); onCreateFile(node.id); }}
-                                className="p-0.5 hover:bg-background rounded"
-                            >
-                                <FilePlus className="h-3 w-3 text-muted-foreground" />
-                            </button>
-                            <button
-                                onClick={(e) => { e.stopPropagation(); onCreateFolder(node.id); }}
-                                className="p-0.5 hover:bg-background rounded"
-                            >
-                                <FolderPlus className="h-3 w-3 text-muted-foreground" />
-                            </button>
-                        </div>
                     </>
                 ) : (
                     <>
                         <FileIcon filename={node.name} className="h-3 w-3 shrink-0 ml-3" />
-                        <span className="truncate">{node.name}</span>
+                        <span className="truncate flex-1">{node.name}</span>
                         {node.is_public && <Globe className="h-3 w-3 text-muted-foreground shrink-0" />}
                     </>
                 )}
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-1 hover:bg-background rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                            <MoreHorizontal className="h-3 w-3 text-muted-foreground" />
+                        </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40">
+                        {isFolder && (
+                            <>
+                                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onCreateFile(node.id); }}>
+                                    <FilePlus className="h-4 w-4 mr-2" />
+                                    New File
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onCreateFolder(node.id); }}>
+                                    <FolderPlus className="h-4 w-4 mr-2" />
+                                    New Folder
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                            </>
+                        )}
+                        <DropdownMenuItem
+                            onClick={(e) => { e.stopPropagation(); onDelete(node); }}
+                            className="text-destructive focus:text-destructive"
+                        >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
 
             {isFolder && isExpanded && children.length > 0 && (
@@ -565,6 +621,7 @@ function TreeNode({
                                 onToggle={onToggle}
                                 onCreateFile={onCreateFile}
                                 onCreateFolder={onCreateFolder}
+                                onDelete={onDelete}
                             />
                         ))}
                 </div>
