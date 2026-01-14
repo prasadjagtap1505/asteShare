@@ -77,7 +77,27 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="h-12 border-x border-[var(--edge)] bg-muted/5 sm:h-24" />
+      <div className="h-12 border-x border-[var(--edge)] bg-muted/5 sm:h-14" />
+
+      {/* Velocity Scroll Effect */}
+      <section className="panel py-20 overflow-hidden bg-muted/5">
+        <ScrollVelocityContainer>
+          <ScrollVelocityRow
+            baseVelocity={2}
+            className="text-5xl md:text-7xl font-black uppercase tracking-tighter opacity-15"
+          >
+            Paste Share •&nbsp;
+          </ScrollVelocityRow>
+          <ScrollVelocityRow
+            baseVelocity={-2}
+            className="text-5xl md:text-7xl font-black uppercase tracking-tighter opacity-15"
+          >
+            Paste Share •&nbsp;
+          </ScrollVelocityRow>
+        </ScrollVelocityContainer>
+      </section>
+
+      <div className="h-12 border-x border-[var(--edge)] bg-muted/5 sm:h-14" />
 
       {/* Features Panel */}
       <section className="panel">
@@ -101,24 +121,6 @@ export default function HomePage() {
             <p className="text-sm text-muted-foreground">Generate a link and share with anyone</p>
           </div>
         </div>
-      </section>
-
-      {/* Velocity Scroll Effect */}
-      <section className="panel !border-t-0 py-20 overflow-hidden bg-muted/5">
-        <ScrollVelocityContainer>
-          <ScrollVelocityRow
-            baseVelocity={2}
-            className="text-5xl md:text-7xl font-black uppercase tracking-tighter opacity-15"
-          >
-            Paste Share •&nbsp;
-          </ScrollVelocityRow>
-          <ScrollVelocityRow
-            baseVelocity={-2}
-            className="text-5xl md:text-7xl font-black uppercase tracking-tighter opacity-15"
-          >
-            Paste Share •&nbsp;
-          </ScrollVelocityRow>
-        </ScrollVelocityContainer>
       </section>
 
       {/* Extended Decorative Grids */}
