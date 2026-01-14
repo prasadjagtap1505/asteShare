@@ -46,11 +46,8 @@ export const FollowerPointerCard = ({
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
-      style={{
-        cursor: "none",
-      }}
       ref={ref}
-      className={cn("relative", className)}
+      className={cn("relative cursor-auto lg:cursor-none", className)}
     >
       {children}
       <AnimatePresence>
@@ -72,7 +69,7 @@ export const FollowPointer = ({
 
   return (
     <motion.div
-      className="absolute z-[999] h-4 w-4 rounded-full"
+      className="absolute z-[999] h-4 w-4 rounded-full hidden lg:block"
       style={{
         top: y,
         left: x,

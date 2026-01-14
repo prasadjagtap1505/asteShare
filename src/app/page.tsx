@@ -132,7 +132,7 @@ export default function HomePage() {
 
       <div className="panel !border-t-0 h-32 bg-muted/5" />
       <div className="panel !border-t-0 h-16 border-b flex items-center justify-center">
-        <p className="text-sm text-muted-foreground font-medium tracking-tight">
+        <div className="text-sm text-muted-foreground font-medium tracking-tight">
           Developed By{" "}
           <LinkPreview
             url="https://geetmore.live"
@@ -142,7 +142,7 @@ export default function HomePage() {
           >
             Geet More
           </LinkPreview>
-        </p>
+        </div>
       </div>
     </main>
   );
