@@ -70,7 +70,7 @@ export function EmailVerificationModal({
                 <p className="text-center text-muted-foreground mb-6 leading-relaxed">
                     {isSuccess ? (
                         <>
-                            We've sent a verification link to
+                            We&apos;ve sent a verification link to
                             {email && (
                                 <span className="block mt-1 font-semibold text-foreground">
                                     {email}
@@ -82,14 +82,14 @@ export function EmailVerificationModal({
                         </>
                     ) : (
                         <>
-                            Your email address hasn't been verified yet.
+                            Your email address hasn&apos;t been verified yet.
                             {email && (
                                 <span className="block mt-1 font-semibold text-foreground">
                                     {email}
                                 </span>
                             )}
                             <span className="block mt-2">
-                                Please check your Gmail inbox and click the <strong>"Verify Email"</strong> button to continue.
+                                Please check your Gmail inbox and click the <strong>&quot;Verify Email&quot;</strong> button to continue.
                             </span>
                         </>
                     )}
@@ -138,7 +138,7 @@ export function EmailVerificationModal({
                         {isSuccess ? (
                             <>
                                 <CheckCircle2 className="w-4 h-4 mr-2" />
-                                Got it, I'll check my email
+                                Got it, I&apos;ll check my email
                             </>
                         ) : (
                             'Close'
@@ -148,7 +148,7 @@ export function EmailVerificationModal({
 
                 {/* Help text */}
                 <p className="mt-4 text-xs text-center text-muted-foreground">
-                    Didn't receive the email? Check your spam folder or{' '}
+                    Didn&apos;t receive the email? Check your spam folder or{' '}
                     <button
                         onClick={onResendEmail}
                         className="underline hover:text-foreground transition-colors"

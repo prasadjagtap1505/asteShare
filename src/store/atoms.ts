@@ -1,19 +1,17 @@
 import { atom } from 'jotai';
-import type { User, Project, FileNode, EditorState } from '@/types';
+import type { User, FileNode, EditorState } from '@/types';
 
 // Auth atoms
 export const userAtom = atom<User | null>(null);
 export const isAuthenticatedAtom = atom((get) => get(userAtom) !== null);
 export const isAuthLoadingAtom = atom<boolean>(true);
 
-// Project atoms
-export const currentProjectAtom = atom<Project | null>(null);
-export const projectsAtom = atom<Project[]>([]);
+
 
 // File tree atoms
 export const fileNodesAtom = atom<FileNode[]>([]);
 export const selectedNodeIdAtom = atom<string | null>(null);
-export const expandedFolderIdsAtom = atom<Set<string>>(new Set());
+export const expandedFolderIdsAtom = atom<Set<string>>(new Set<string>());
 
 // Editor atoms
 export const editorStateAtom = atom<EditorState>({

@@ -60,8 +60,8 @@ export default function AuthPage() {
         try {
             await resendVerificationEmail(verificationEmail);
             toast.success('Verification email sent! Check your inbox.');
-        } catch (error: any) {
-            toast.error(error.message || 'Failed to resend email');
+        } catch (error: unknown) {
+            toast.error(error instanceof Error ? error.message : 'Failed to resend email');
         } finally {
             setIsResending(false);
         }
@@ -73,9 +73,9 @@ export default function AuthPage() {
             await signIn(data.email, data.password);
             toast.success('Welcome back!');
             router.push('/dashboard');
-        } catch (error: any) {
+        } catch (error: unknown) {
             // Check if the error is about email not being verified
-            const errorMessage = error.message?.toLowerCase() || '';
+            const errorMessage = error instanceof Error ? error.message.toLowerCase() : '';
             if (errorMessage.includes('email not confirmed') ||
                 errorMessage.includes('email not verified') ||
                 errorMessage.includes('confirm your email')) {
@@ -84,7 +84,7 @@ export default function AuthPage() {
                 setModalVariant('error');
                 setShowVerificationModal(true);
             } else {
-                toast.error(error.message || 'Failed to sign in');
+                toast.error(error instanceof Error ? error.message : 'Failed to sign in');
             }
         } finally {
             setIsSubmitting(false);
@@ -99,8 +99,8 @@ export default function AuthPage() {
             setVerificationEmail(data.email);
             setModalVariant('success');
             setShowVerificationModal(true);
-        } catch (error: any) {
-            toast.error(error.message || 'Failed to create account');
+        } catch (error: unknown) {
+            toast.error(error instanceof Error ? error.message : 'Failed to create account');
         } finally {
             setIsSubmitting(false);
         }

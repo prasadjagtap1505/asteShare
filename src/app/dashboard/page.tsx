@@ -106,6 +106,18 @@ export default function DashboardPage() {
         }
     }, [user, router]);
 
+    const handleSave = async () => {
+        if (!selectedFile || !editorState.isDirty) return;
+        try {
+            await updateFileContent(selectedFile.id, editorState.content);
+            await mutateNodes();
+            setEditorState((prev) => ({ ...prev, isDirty: false }));
+            toast.success('Saved!');
+        } catch (error: unknown) {
+            toast.error(error instanceof Error ? error.message : 'Failed to save');
+        }
+    };
+
     // Keyboard shortcut for save
     useEffect(() => {
         const handler = (e: KeyboardEvent) => {
@@ -118,7 +130,7 @@ export default function DashboardPage() {
         };
         window.addEventListener('keydown', handler);
         return () => window.removeEventListener('keydown', handler);
-    }, [editorState.isDirty, selectedFile]);
+    }, [editorState.isDirty, selectedFile, handleSave]);
 
     const handleCreate = async () => {
         if (!user || !newName.trim()) return;
@@ -134,8 +146,8 @@ export default function DashboardPage() {
             setIsCreateOpen(false);
             setNewName('');
             toast.success(`${createType === 'file' ? 'File' : 'Folder'} created!`);
-        } catch (error: any) {
-            toast.error(error.message || 'Failed to create');
+        } catch (error: unknown) {
+            toast.error(error instanceof Error ? error.message : 'Failed to create');
         }
     };
 
@@ -149,22 +161,12 @@ export default function DashboardPage() {
             setEditorState({ selectedFileId: null, content: '', isDirty: false });
             setIsDeleteOpen(false);
             toast.success('Deleted!');
-        } catch (error: any) {
-            toast.error(error.message || 'Failed to delete');
+        } catch (error: unknown) {
+            toast.error(error instanceof Error ? error.message : 'Failed to delete');
         }
     };
 
-    const handleSave = async () => {
-        if (!selectedFile || !editorState.isDirty) return;
-        try {
-            await updateFileContent(selectedFile.id, editorState.content);
-            await mutateNodes();
-            setEditorState((prev) => ({ ...prev, isDirty: false }));
-            toast.success('Saved!');
-        } catch (error: any) {
-            toast.error(error.message || 'Failed to save');
-        }
-    };
+
 
     const handleSelectFile = (node: FileNode) => {
         if (node.type === 'folder') {
@@ -217,8 +219,8 @@ export default function DashboardPage() {
             setCopied(true);
             toast.success('Link copied!');
             setTimeout(() => setCopied(false), 2000);
-        } catch (error: any) {
-            toast.error(error.message || 'Failed to generate link');
+        } catch (error: unknown) {
+            toast.error(error instanceof Error ? error.message : 'Failed to generate link');
         }
     };
 
@@ -229,8 +231,8 @@ export default function DashboardPage() {
             await mutateNodes();
             setSelectedFile((prev) => (prev ? { ...prev, is_public: isPublic } : null));
             toast.success(isPublic ? 'Now public!' : 'Now private');
-        } catch (error: any) {
-            toast.error(error.message || 'Failed to update');
+        } catch (error: unknown) {
+            toast.error(error instanceof Error ? error.message : 'Failed to update');
         }
     };
 
@@ -459,7 +461,7 @@ export default function DashboardPage() {
                         <DialogTitle>Delete {selectedFile?.type === 'folder' ? 'Folder' : 'File'}</DialogTitle>
                     </DialogHeader>
                     <p className="text-sm text-muted-foreground py-4">
-                        Are you sure you want to delete "{selectedFile?.name}"?
+                        Are you sure you want to delete &quot;{selectedFile?.name}&quot;?
                         {selectedFile?.type === 'folder' && ' All files inside will also be deleted.'}
                         This cannot be undone.
                     </p>

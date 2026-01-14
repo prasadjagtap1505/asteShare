@@ -70,7 +70,7 @@ export default function HomePage() {
           <div className="p-4 border-b sm:border-b-0 sm:border-r border-[var(--edge)]">
             <div className="text-2xl font-bold text-muted-foreground/50 mb-2">1</div>
             <h3 className="font-medium mb-1">Create</h3>
-            <p className="text-sm text-muted-foreground">Make folders like "C++" and files like "hello.cpp"</p>
+            <p className="text-sm text-muted-foreground">Make folders like &quot;C++&quot; and files like &quot;hello.cpp&quot;</p>
           </div>
           <div className="p-4 border-b sm:border-b-0 sm:border-r border-[var(--edge)]">
             <div className="text-2xl font-bold text-muted-foreground/50 mb-2">2</div>
