@@ -5,12 +5,28 @@ import Link from 'next/link';
 import { useAtom } from 'jotai';
 import { Compass, LayoutDashboard, Code2, ArrowRight } from 'lucide-react';
 import { userAtom } from '@/store';
+import { ScrollVelocityContainer, ScrollVelocityRow, AnimatedBlurTestimonials, LinkPreview } from '@/components/ui';
+
+const TESTIMONIALS = [
+  {
+    message: "PasteShare is the fastest way I've found to share code snippets with my team. The folder structure support is a game changer.",
+    avatar: { src: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix", fallback: "FX" }
+  },
+  {
+    message: "Clean UI, zero friction. It's exactly what I needed for my coding tutorials.",
+    avatar: { src: "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka", fallback: "AK" }
+  },
+  {
+    message: "The instant link generation and grid-based design make it feel incredibly premium.",
+    avatar: { src: "https://api.dicebear.com/7.x/avataaars/svg?seed=Julian", fallback: "JN" }
+  }
+];
 
 export default function HomePage() {
   const [user] = useAtom(userAtom);
 
   return (
-    <main className="mx-auto space-y-12 px-2 py-12 md:max-w-3xl">
+    <main className="mx-auto px-2 py-12 md:max-w-3xl">
       {/* Hero Panel */}
       <section className="panel">
         <div className="panel-header border-b border-[var(--edge)]">
@@ -61,6 +77,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <div className="h-12 border-x border-[var(--edge)] bg-muted/5 sm:h-24" />
+
       {/* Features Panel */}
       <section className="panel">
         <div className="panel-header border-b border-[var(--edge)]">
@@ -84,6 +102,48 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Velocity Scroll Effect */}
+      <section className="panel !border-t-0 py-20 overflow-hidden bg-muted/5">
+        <ScrollVelocityContainer>
+          <ScrollVelocityRow
+            baseVelocity={2}
+            className="text-5xl md:text-7xl font-black uppercase tracking-tighter opacity-15"
+          >
+            Paste Share •&nbsp;
+          </ScrollVelocityRow>
+          <ScrollVelocityRow
+            baseVelocity={-2}
+            className="text-5xl md:text-7xl font-black uppercase tracking-tighter opacity-15"
+          >
+            Paste Share •&nbsp;
+          </ScrollVelocityRow>
+        </ScrollVelocityContainer>
+      </section>
+
+      {/* Extended Decorative Grids */}
+      <div className="grid grid-cols-1">
+        <div className="panel !border-t-0 min-h-64 flex flex-col items-center justify-center p-12 bg-muted/5">
+          <div className="max-w-md w-full">
+            <AnimatedBlurTestimonials data={TESTIMONIALS} />
+          </div>
+        </div>
+      </div>
+
+      <div className="panel !border-t-0 h-32 bg-muted/5" />
+      <div className="panel !border-t-0 h-16 border-b flex items-center justify-center">
+        <p className="text-sm text-muted-foreground font-medium tracking-tight">
+          Developed By{" "}
+          <LinkPreview
+            url="https://geetmore.live"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-bold text-foreground underline decoration-[var(--edge)] underline-offset-4 hover:decoration-foreground transition-colors"
+          >
+            Geet More
+          </LinkPreview>
+        </p>
+      </div>
     </main>
   );
 }

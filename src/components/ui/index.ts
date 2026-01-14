@@ -13,3 +13,6 @@ export * from './separator';
 export * from './scroll-area';
 export * from './tooltip';
 export * from './avatar';
+export * from './scroll-based-velocity';
+export { default as AnimatedBlurTestimonials } from './animated-blur-testimonials';
+export * from './link-preview';
