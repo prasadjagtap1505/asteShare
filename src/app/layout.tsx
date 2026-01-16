@@ -10,13 +10,19 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'PasteShare - Share Code & Text Instantly',
+  title: 'PasteShare',
   description: 'Create, organize, and share code snippets, text, and entire folder structures with zero friction. Perfect for students and developers.',
   keywords: ['paste', 'code sharing', 'snippets', 'text sharing', 'developer tools'],
   authors: [{ name: 'PasteShare' }],
   icons: {
-    icon: '/FAVICON.png',
+    icon: [
+      { url: '/favicon/favicon.ico', sizes: 'any' },
+      { url: '/favicon/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+    ],
+    apple: '/favicon/apple-touch-icon.png',
   },
+  manifest: '/favicon/site.webmanifest',
   openGraph: {
     title: 'PasteShare - Share Code & Text Instantly',
     description: 'Create, organize, and share code snippets, text, and entire folder structures with zero friction.',
