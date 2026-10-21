@@ -142,7 +142,7 @@ export default function HomePage() {
             rel="noopener noreferrer"
             className="font-bold text-foreground underline decoration-[var(--edge)] underline-offset-4 hover:decoration-foreground transition-colors"
           >
-            Geet More
+            Prasad Jagtap
           </LinkPreview>
         </div>
       </div>
