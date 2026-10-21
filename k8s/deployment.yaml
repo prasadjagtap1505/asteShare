@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: asteshare-deployment
+  labels:
+    app: asteshare
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: asteshare
+  template:
+    metadata:
+      labels:
+        app: asteshare
+    spec:
+      containers:
+        - name: asteshare
+          image: prasadjagtap2515/asteshare:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
