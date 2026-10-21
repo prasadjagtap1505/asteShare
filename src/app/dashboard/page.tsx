@@ -92,20 +92,24 @@ export default function DashboardPage() {
             const folderIds = nodes
                 .filter((n) => n.type === 'folder')
                 .map((n) => n.id);
-            setExpandedFolders(new Set(folderIds));
+            queueMicrotask(() => {
+                setExpandedFolders(new Set(folderIds));
+            });
 
             // If no file is selected, select the first one automatically
             if (!selectedFile && nodes.length > 0) {
                 const firstFile = nodes.find((n) => n.type === 'file');
-                if (firstFile) {
-                    setSelectedFile(firstFile);
-                    setSelectedNodeId(firstFile.id);
-                    setEditorState({
-                        selectedFileId: firstFile.id,
-                        content: firstFile.content || '',
-                        isDirty: false,
-                    });
-                }
+                    if (firstFile) {
+                        queueMicrotask(() => {
+                            setSelectedFile(firstFile);
+                            setSelectedNodeId(firstFile.id);
+                            setEditorState({
+                                selectedFileId: firstFile.id,
+                                content: firstFile.content || '',
+                                isDirty: false,
+                            });
+                         });
+                        }
             }
         }
     }, [nodes, setFileNodes, selectedFile, setSelectedNodeId, setEditorState]);
