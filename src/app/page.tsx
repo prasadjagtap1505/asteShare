@@ -37,7 +37,7 @@ export default function HomePage() {
         </div>
         <div className="panel-content space-y-4">
           <p className="text-muted-foreground">
-            Create files and folders, paste your code, and share instantly.
+            Create files and folders, paste your code, and share instantly. (v2 - deployed by Jenkins Build #11)
           </p>
 
           {/* Navigation Grid */}
