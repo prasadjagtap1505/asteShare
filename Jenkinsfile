@@ -13,7 +13,7 @@ pipeline {
             }
         }
 
-        stage('Lint & Verify Build') {
+        stage('Build & Test (Lint)') {
             steps {
                 bat 'npm ci'
                 bat 'npm run lint'
@@ -21,7 +21,7 @@ pipeline {
         }
 
         stage('Docker Build') {
-            steps {                                     
+            steps {
                 bat "docker build -t ${IMAGE_NAME}:latest -t ${IMAGE_NAME}:${BUILD_NUMBER} ."
             }
         }
@@ -41,7 +41,20 @@ pipeline {
                 bat 'kubectl apply -f k8s/deployment.yaml'
                 bat 'kubectl apply -f k8s/service.yaml'
                 bat 'kubectl rollout restart deployment/asteshare-deployment'
+                bat 'kubectl rollout status deployment/asteshare-deployment --timeout=120s'
+                bat 'kubectl get pods'
+                bat 'kubectl get deployment'
+                bat 'kubectl get svc'
             }
+        }
+    }
+
+    post {
+        success {
+            echo "Build ${BUILD_NUMBER} deployed successfully as ${IMAGE_NAME}:${BUILD_NUMBER}"
+        }
+        failure {
+            echo "Build ${BUILD_NUMBER} failed. Check the stage logs above."
         }
     }
 }
